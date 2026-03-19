@@ -1,16 +1,44 @@
-<div id="auth-container" class="container">
-    <h2>چوونەژوورەوە</h2>
-    <input type="email" id="email" placeholder="ئیمێڵ">
-    <input type="password" id="password" placeholder="پاسوۆرد">
-    <div class="auth-buttons">
-        <button onclick="login()" class="main-btn">چوونەژوورەوە</button>
-        <button onclick="register()" class="secondary-btn">دروستکردنی ئەکاونت</button>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تێبینی و کۆپی پارێزراو</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<div id="app-container" class="container" style="display: none;">
-    <div class="header">
-        <button id="logout-btn" class="logout-btn">چوونە دەرەوە</button>
-        <button id="theme-toggle" class="theme-btn">🌙</button>
+    <div id="auth-container" class="container">
+        <h2>چوونەژوورەوە</h2>
+        <div class="auth-form">
+            <input type="email" id="email" placeholder="ئیمێڵەکەت بنووسە">
+            <input type="password" id="password" placeholder="وشەی نهێنی (لەکەمتر لە ٦ پیت نەبێت)">
+            
+            <div class="auth-buttons">
+                <button onclick="login()" class="main-btn">چوونەژوورەوە</button>
+                <button onclick="register()" class="secondary-btn">دروستکردنی ئەکاونت</button>
+            </div>
+        </div>
     </div>
+
+    <div id="app-container" class="container" style="display: none;">
+        <div class="header">
+            <button id="logout-btn" onclick="logout()" class="logout-btn">دەرچوون</button>
+            <h2 id="user-greeting">تێبینییەکانم</h2>
+            <button id="theme-toggle" class="theme-btn">🌙</button>
+        </div>
+        
+        <div class="input-group">
+            <textarea id="textInput" placeholder="دەقەکە لێرە دابنێ..."></textarea>
+            <button onclick="saveAndCopy()" class="main-btn">کۆپی و پاشەکەوت</button>
+        </div>
+
+        <div class="history">
+            <h3>لیستی پارێزراو</h3>
+            <ul id="copyList"></ul>
+        </div>
     </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
