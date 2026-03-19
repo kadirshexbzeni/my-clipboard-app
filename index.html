@@ -1,30 +1,16 @@
-<!DOCTYPE html>
-<html lang="ku" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clipboard Manager Pro</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <div class="container">
-        <div class="header">
-            <button id="theme-toggle" class="theme-btn">🌙</button>
-            <h2>Clipboard Manager</h2>
-        </div>
-        
-        <div class="input-group">
-            <textarea id="textInput" placeholder="دەقەکە لێرە بنووسە..."></textarea>
-            <button onclick="saveAndCopy()" class="main-btn">کۆپی و پاشەکەوت</button>
-        </div>
-
-        <div class="history">
-            <h3>لیستی ئامێرەکان</h3>
-            <ul id="copyList"></ul>
-        </div>
+<div id="auth-container" class="container">
+    <h2>چوونەژوورەوە</h2>
+    <input type="email" id="email" placeholder="ئیمێڵ">
+    <input type="password" id="password" placeholder="پاسوۆرد">
+    <div class="auth-buttons">
+        <button onclick="login()" class="main-btn">چوونەژوورەوە</button>
+        <button onclick="register()" class="secondary-btn">دروستکردنی ئەکاونت</button>
     </div>
+</div>
 
-    <script type="module" src="script.js"></script>
-</body>
-</html>
+<div id="app-container" class="container" style="display: none;">
+    <div class="header">
+        <button id="logout-btn" class="logout-btn">چوونە دەرەوە</button>
+        <button id="theme-toggle" class="theme-btn">🌙</button>
+    </div>
+    </div>
