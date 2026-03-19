@@ -17,7 +17,7 @@
 }
 
 body {
-    font-family: 'Tahoma', sans-serif;
+    font-family: 'Tahoma', 'Segoe UI', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     display: flex;
@@ -43,8 +43,6 @@ body {
     margin-bottom: 20px;
 }
 
-h2 { margin: 0; color: var(--accent-color); font-size: 22px; }
-
 .theme-btn {
     background: var(--li-bg);
     border: 1px solid var(--border-color);
@@ -69,6 +67,7 @@ textarea {
     font-size: 16px;
     box-sizing: border-box;
     resize: none;
+    transition: 0.3s;
 }
 
 .main-btn {
@@ -95,18 +94,33 @@ li {
     border-right: 5px solid var(--accent-color);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
+    position: relative;
+}
+
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timestamp {
+    font-size: 11px;
+    color: #888;
+    font-family: sans-serif;
 }
 
 .text-content {
     word-break: break-all;
     font-size: 15px;
+    line-height: 1.5;
 }
 
 .actions {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+    margin-top: 5px;
 }
 
 .copy-item-btn { background: #28a745; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
