@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getDatabase, ref, push, onChildAdded, remove, onChildRemoved } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// !!! زانیارییەکانی خۆت لێرە دابنێ !!!
+// !!! زانیارییەکانی فایەربەیسەکەی خۆت لێرە دابنێ !!!
 const firebaseConfig = {
   apiKey: "لێرە_کلیلەکە_دابنێ",
   authDomain: "my-clipboard-app.firebaseapp.com",
@@ -17,7 +17,14 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const notesRef = ref(db, 'notes');
 
-// --- کرداری کۆپی و پاشەکەوت ---
+// فەنکشن بۆ ناسینەوەی لینک
+function formatText(text) {
+    const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(urlPattern, function(url) {
+        return `<a href="${url}" target="_blank" style="color: #1a73e8; text-decoration: underline;">${url}</a>`;
+    });
+}
+
 window.saveAndCopy = function() {
     const input = document.getElementById('textInput');
     const text = input.value;
@@ -29,22 +36,23 @@ window.saveAndCopy = function() {
     });
 };
 
-// --- سڕینەوە ---
 window.deleteNote = function(key) {
     if(confirm("ئایا دڵنیای لە سڕینەوە؟")) {
         remove(ref(db, `notes/${key}`));
     }
 };
 
-// --- نیشاندان و Sync ---
 onChildAdded(notesRef, (snapshot) => {
     const list = document.getElementById('copyList');
     const li = document.createElement('li');
+    const content = snapshot.val().content;
     li.id = snapshot.key;
+    
+    // لێرە فەنکشنی formatText بەکاردێنین بۆ گۆڕینی لینکەکان
     li.innerHTML = `
-        <div class="text-content">${snapshot.val().content}</div>
+        <div class="text-content">${formatText(content)}</div>
         <div class="actions">
-            <button class="copy-item-btn" onclick="copyAgain('${snapshot.val().content.replace(/'/g, "\\'")}')">کۆپی</button>
+            <button class="copy-item-btn" onclick="copyAgain('${content.replace(/'/g, "\\'")}')">کۆپی</button>
             <button class="delete-btn" onclick="deleteNote('${snapshot.key}')">سڕینەوە</button>
         </div>`;
     list.prepend(li);
@@ -59,10 +67,9 @@ window.copyAgain = function(text) {
     alert("کۆپی کرایەوە");
 };
 
-// --- Dark Mode Logic ---
+// Dark Mode
 const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme') || 'light';
-
 document.documentElement.setAttribute('data-theme', currentTheme);
 themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
 
