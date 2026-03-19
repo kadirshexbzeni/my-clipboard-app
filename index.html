@@ -1,64 +1,26 @@
-<div class="container">
-    <button id="theme-toggle" class="theme-btn">🌙</button>
-    <h2>Clipboard Manager</h2>
-    ```
-
----
-
-### ٢. CSS (style.css)
-ئەم بەشانە زیاد بکە بۆ پێناسەکردنی ڕەنگە ڕەشەکان:
-
-```css
-/* ڕەنگەکان بە گۆڕاو (Variables) */
-:root {
-    --bg-color: #f0f2f5;
-    --container-bg: #ffffff;
-    --text-color: #333;
-    --li-bg: #f8f9fa;
-    --border-color: #e0e0e0;
-}
-
-/* ڕەنگەکان بۆ Dark Mode */
-[data-theme="dark"] {
-    --bg-color: #18191a;
-    --container-bg: #242526;
-    --text-color: #e4e6eb;
-    --li-bg: #3a3b3c;
-    --border-color: #3e4042;
-}
-
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    transition: 0.3s;
-}
-
-.container {
-    background: var(--container-bg);
-    color: var(--text-color);
-}
-
-textarea {
-    background: var(--li-bg);
-    color: var(--text-color);
-    border: 2px solid var(--border-color);
-}
-
-li {
-    background: var(--li-bg);
-    color: var(--text-color);
-    border-right: 5px solid #1a73e8;
-}
-
-.text-content {
-    color: var(--text-color);
-}
-
-/* ستایلی دوگمەی گۆڕینی مۆد */
-.theme-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    float: left;
-}
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clipboard Manager Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button id="theme-toggle" class="theme-btn">🌙</button>
+            <h2>Clipboard Manager</h2>
+        </div>
+        <div class="input-group">
+            <textarea id="textInput" placeholder="دەق یان لینک لێرە دابنێ..."></textarea>
+            <button onclick="saveAndCopy()" class="main-btn">کۆپی و پاشەکەوت</button>
+        </div>
+        <div class="history">
+            <h3>لیستی ئامێرەکان</h3>
+            <ul id="copyList"></ul>
+        </div>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
