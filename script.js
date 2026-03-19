@@ -1,126 +1,24 @@
-:root {
-    --bg-color: #f0f2f5;
-    --container-bg: #ffffff;
-    --text-color: #333;
-    --li-bg: #f8f9fa;
-    --border-color: #e0e0e0;
-    --accent-color: #1a73e8;
+const themeToggle = document.getElementById('theme-toggle');
+const currentTheme = localStorage.getItem('theme');
+
+// پشکنینی ئەوەی ئایا پێشتر Dark Mode چالاک کراوە؟
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    if (currentTheme === 'dark') {
+        themeToggle.textContent = '☀️';
+    }
 }
 
-[data-theme="dark"] {
-    --bg-color: #18191a;
-    --container-bg: #242526;
-    --text-color: #e4e6eb;
-    --li-bg: #3a3b3c;
-    --border-color: #3e4042;
-    --accent-color: #4589ff;
-}
-
-body {
-    font-family: 'Tahoma', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    transition: 0.3s;
-    direction: rtl;
-}
-
-.container {
-    background: var(--container-bg);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 500px;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.theme-btn {
-    background: var(--li-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-textarea {
-    width: 100%;
-    height: 120px;
-    padding: 15px;
-    background: var(--li-bg);
-    color: var(--text-color);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    font-size: 16px;
-    box-sizing: border-box;
-    resize: none;
-}
-
-.main-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-li {
-    background: var(--li-bg);
-    padding: 15px;
-    margin-bottom: 12px;
-    border-radius: 10px;
-    border-right: 5px solid var(--accent-color);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.note-header {
-    display: flex;
-    justify-content: flex-start;
-}
-
-.timestamp {
-    font-size: 11px;
-    color: #888;
-    background: rgba(0,0,0,0.05);
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-[data-theme="dark"] .timestamp {
-    background: rgba(255,255,255,0.1);
-    color: #aaa;
-}
-
-.text-content {
-    word-break: break-all;
-    font-size: 15px;
-    line-height: 1.5;
-}
-
-.actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-.copy-item-btn { background: #28a745; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
-.delete-btn { background: #dc3545; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
+themeToggle.addEventListener('click', () => {
+    let theme = document.documentElement.getAttribute('data-theme');
+    
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeToggle.textContent = '🌙';
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeToggle.textContent = '☀️';
+    }
+});
