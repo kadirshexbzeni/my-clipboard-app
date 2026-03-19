@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>کۆپی و سڕینەوەی هەور</title>
+    <title>Clipboard Manager Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        <h2>Clipboard Manager</h2>
+        <div class="header">
+            <button id="theme-toggle" class="theme-btn">🌙</button>
+            <h2>Clipboard Manager</h2>
+        </div>
         
         <div class="input-group">
-            <textarea id="textInput" placeholder="دەقەکە لێرە بنووسە یان دایبڕێژە..."></textarea>
+            <textarea id="textInput" placeholder="دەقەکە لێرە بنووسە..."></textarea>
             <button onclick="saveAndCopy()" class="main-btn">کۆپی و پاشەکەوت</button>
         </div>
 
         <div class="history">
-            <h3>لیستی پارێزراو</h3>
+            <h3>لیستی ئامێرەکان</h3>
             <ul id="copyList"></ul>
         </div>
     </div>
