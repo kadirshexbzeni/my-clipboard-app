@@ -1,89 +1,126 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded, remove, onChildRemoved } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-// !!! زانیارییەکانی خۆت لێرە دابنێ !!!
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const notesRef = ref(db, 'notes');
-
-function formatText(text) {
-    const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-    return text.replace(urlPattern, (url) => `<a href="${url}" target="_blank" style="color: #1a73e8; text-decoration: underline;">${url}</a>`);
+:root {
+    --bg-color: #f0f2f5;
+    --container-bg: #ffffff;
+    --text-color: #333;
+    --li-bg: #f8f9fa;
+    --border-color: #e0e0e0;
+    --accent-color: #1a73e8;
 }
 
-window.saveAndCopy = function() {
-    const input = document.getElementById('textInput');
-    const text = input.value;
-    if (text.trim() === "") return;
+[data-theme="dark"] {
+    --bg-color: #18191a;
+    --container-bg: #242526;
+    --text-color: #e4e6eb;
+    --li-bg: #3a3b3c;
+    --border-color: #3e4042;
+    --accent-color: #4589ff;
+}
 
-    // دروستکردنی کات و ڕێکەوت بە فۆرماتێکی پارێزراو
-    const now = new Date();
-    const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-    const dateStr = now.toLocaleDateString('en-GB');
-    const fullDateTime = timeStr + " - " + dateStr;
+body {
+    font-family: 'Tahoma', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    transition: 0.3s;
+    direction: rtl;
+}
 
-    navigator.clipboard.writeText(text).then(() => {
-        push(notesRef, { 
-            content: text, 
-            time: fullDateTime 
-        });
-        input.value = "";
-    });
-};
+.container {
+    background: var(--container-bg);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+}
 
-window.deleteNote = function(key) {
-    if(confirm("ئایا دڵنیای لە سڕینەوە؟")) {
-        remove(ref(db, `notes/${key}`));
-    }
-};
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
-onChildAdded(notesRef, (snapshot) => {
-    const list = document.getElementById('copyList');
-    const li = document.createElement('li');
-    const data = snapshot.val();
-    li.id = snapshot.key;
-    
-    li.innerHTML = `
-        <div class="note-header">
-            <span class="timestamp">${data.time || 'پێشتر'}</span>
-        </div>
-        <div class="text-content">${formatText(data.content)}</div>
-        <div class="actions">
-            <button class="copy-item-btn" onclick="copyAgain('${data.content.replace(/'/g, "\\'")}')">کۆپی</button>
-            <button class="delete-btn" onclick="deleteNote('${snapshot.key}')">سڕینەوە</button>
-        </div>`;
-    list.prepend(li);
-});
+.theme-btn {
+    background: var(--li-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-onChildRemoved(notesRef, (snapshot) => {
-    const el = document.getElementById(snapshot.key);
-    if(el) el.remove();
-});
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 15px;
+    background: var(--li-bg);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+    resize: none;
+}
 
-window.copyAgain = function(text) {
-    navigator.clipboard.writeText(text);
-    alert("کۆپی کرایەوە");
-};
+.main-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+}
 
-const themeToggle = document.getElementById('theme-toggle');
-const currentTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', currentTheme);
-themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+li {
+    background: var(--li-bg);
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border-right: 5px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-themeToggle.addEventListener('click', () => {
-    let theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-});
+.note-header {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.timestamp {
+    font-size: 11px;
+    color: #888;
+    background: rgba(0,0,0,0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+[data-theme="dark"] .timestamp {
+    background: rgba(255,255,255,0.1);
+    color: #aaa;
+}
+
+.text-content {
+    word-break: break-all;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.copy-item-btn { background: #28a745; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
+.delete-btn { background: #dc3545; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
