@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getDatabase, ref, push, onChildAdded, remove, onChildRemoved } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// !!! لێرە زانیارییە ڕاستەقینەکانی فایەربەیسەکەت دابنێ !!!
+// !!! زانیارییەکانی خۆت لێرە دابنێ !!!
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -17,38 +17,37 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const notesRef = ref(db, 'notes');
 
-// فەنکشن بۆ ناسینەوەی لینک
 function formatText(text) {
     const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     return text.replace(urlPattern, (url) => `<a href="${url}" target="_blank" style="color: #1a73e8; text-decoration: underline;">${url}</a>`);
 }
 
-// کرداری کۆپی و پاشەکەوت
 window.saveAndCopy = function() {
     const input = document.getElementById('textInput');
     const text = input.value;
     if (text.trim() === "") return;
 
-    // دروستکردنی کات و ڕێکەوت
+    // دروستکردنی کات و ڕێکەوت بە فۆرماتێکی پارێزراو
     const now = new Date();
-    const dateTime = now.toLocaleString('en-GB', { 
-        hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' 
-    });
+    const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+    const dateStr = now.toLocaleDateString('en-GB');
+    const fullDateTime = timeStr + " - " + dateStr;
 
     navigator.clipboard.writeText(text).then(() => {
-        push(notesRef, { content: text, time: dateTime });
+        push(notesRef, { 
+            content: text, 
+            time: fullDateTime 
+        });
         input.value = "";
     });
 };
 
-// سڕینەوە لە سێرڤەر
 window.deleteNote = function(key) {
     if(confirm("ئایا دڵنیای لە سڕینەوە؟")) {
         remove(ref(db, `notes/${key}`));
     }
 };
 
-// نیشاندان و Sync
 onChildAdded(notesRef, (snapshot) => {
     const list = document.getElementById('copyList');
     const li = document.createElement('li');
@@ -57,7 +56,7 @@ onChildAdded(notesRef, (snapshot) => {
     
     li.innerHTML = `
         <div class="note-header">
-            <span class="timestamp">${data.time || ''}</span>
+            <span class="timestamp">${data.time || 'پێشتر'}</span>
         </div>
         <div class="text-content">${formatText(data.content)}</div>
         <div class="actions">
@@ -68,7 +67,8 @@ onChildAdded(notesRef, (snapshot) => {
 });
 
 onChildRemoved(notesRef, (snapshot) => {
-    document.getElementById(snapshot.key)?.remove();
+    const el = document.getElementById(snapshot.key);
+    if(el) el.remove();
 });
 
 window.copyAgain = function(text) {
@@ -76,7 +76,6 @@ window.copyAgain = function(text) {
     alert("کۆپی کرایەوە");
 };
 
-// Dark Mode Logic
 const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme') || 'light';
 document.documentElement.setAttribute('data-theme', currentTheme);
