@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getDatabase, ref, push, onChildAdded, remove, onChildRemoved } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// !!! دڵنیابەرەوە کلیلەکانت لێرە ڕاستن !!!
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "my-clipboard-app.firebaseapp.com",
@@ -17,31 +16,30 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const notesRef = ref(db, 'notes');
 
-// فەنکشن بۆ چاککردنی کات و گۆڕینی ژمارە درێژەکە بۆ کاتی ئاسایی
+// فەنکشن بۆ ڕێکخستنی کات (چارەسەری ژمارە درێژەکەش دەکات)
 function formatNoteTime(timeData) {
-    if (!timeData) return "بێ کات";
-    
-    // ئەگەر کاتەکە ژمارەیەکی درێژ بوو (Unix Timestamp)
+    if (!timeData) return "پێشتر";
     if (!isNaN(timeData) && timeData.toString().length > 10) {
         const d = new Date(Number(timeData));
         return d.getHours().toString().padStart(2, '0') + ":" + 
                d.getMinutes().toString().padStart(2, '0') + " - " + 
                d.toLocaleDateString('en-GB');
     }
-    return timeData; // ئەگەر خۆی پێشتر دەق بوو
+    return timeData;
 }
 
+// فەنکشن بۆ لینکەکان
 function formatText(text) {
     const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     return text.replace(urlPattern, (url) => `<a href="${url}" target="_blank" style="color: #1a73e8; text-decoration: underline;">${url}</a>`);
 }
 
+// کرداری پاشەکەوت و کۆپی
 window.saveAndCopy = function() {
     const input = document.getElementById('textInput');
     const text = input.value;
     if (text.trim() === "") return;
 
-    // پاشەکەوتکردن بە شێوازی کاتی ئێستا
     const now = new Date();
     const fullDateTime = now.getHours().toString().padStart(2, '0') + ":" + 
                          now.getMinutes().toString().padStart(2, '0') + " - " + 
@@ -53,18 +51,17 @@ window.saveAndCopy = function() {
     });
 };
 
-// فەنکشنی سڕینەوە (گرنگ: دەبێت پەیوەندی بە window-ەوە هەبێت)
+// فەنکشنی سڕینەوە (بەستراوە بە window بۆ ئەوەی لە HTML کار بکات)
 window.deleteNote = function(key) {
-    if(confirm("ئایا دڵنیای لە سڕینەوە؟")) {
-        const itemRef = ref(db, `notes/${key}`);
-        remove(itemRef).then(() => {
-            console.log("سڕایەوە");
-        }).catch((error) => {
-            alert("کێشە هەیە لە سڕینەوە: " + error.message);
+    if (confirm("ئایا دڵنیای لە سڕینەوەی ئەم نۆتە؟")) {
+        const itemRef = ref(db, 'notes/' + key);
+        remove(itemRef).catch((error) => {
+            alert("سڕینەوە سەرکەوتوو نەبوو: " + error.message);
         });
     }
 };
 
+// نیشاندانی داتا کاتێک زیاد دەبێت
 onChildAdded(notesRef, (snapshot) => {
     const list = document.getElementById('copyList');
     const data = snapshot.val();
@@ -79,12 +76,13 @@ onChildAdded(notesRef, (snapshot) => {
         </div>
         <div class="text-content">${formatText(data.content)}</div>
         <div class="actions">
-            <button class="copy-item-btn" onclick="copyAgain(\`${data.content.replace(/`/g, "\\`")}\`)">کۆپی</button>
+            <button class="copy-item-btn" onclick="copyAgain(\`${data.content.replace(/`/g, "\\`").replace(/\$/g, "\\$")}\`)">کۆپی</button>
             <button class="delete-btn" onclick="deleteNote('${key}')">سڕینەوە</button>
         </div>`;
     list.prepend(li);
 });
 
+// وندکردن لەسەر شاشە کاتێک لە سێرڤەر دەسڕێتەوە
 onChildRemoved(notesRef, (snapshot) => {
     const el = document.getElementById(snapshot.key);
     if(el) el.remove();
