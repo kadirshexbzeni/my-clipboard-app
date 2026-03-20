@@ -122,3 +122,25 @@ li {
 
 .copy-item-btn { background: #28a745; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
 .delete-btn { background: #dc3545; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
+
+.note-link {
+    color: #1a73e8;
+    text-decoration: underline;
+    word-break: break-all;
+}
+
+.timestamp {
+    font-size: 11px;
+    color: #888;
+    background: rgba(0,0,0,0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+[data-theme="dark"] .timestamp {
+    background: rgba(255,255,255,0.1);
+    color: #aaa;
+}
+
